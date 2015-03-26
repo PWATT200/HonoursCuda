@@ -41,9 +41,10 @@ class Maze
 	const unsigned m_width = 39;
 	const unsigned m_height = 23;
 	bool m_maze[897];
+	curandState_t mState;
 	
 public:
-	curandState_t mState;
+	
 	friend std::ostream &operator<<(std::ostream &os, const Maze &maze);
 	/*
 
@@ -56,6 +57,10 @@ public:
 
 	Maze()
 	{
+	}
+
+	__device__ void setState(curandState_t state){
+		mState = state;
 	}
 
 	__device__ void Generate(){
@@ -131,7 +136,7 @@ __global__ void createMaze(Maze * mArray, curandState_t *state)
 	if (idx < N) {
 
 		//*intArray = curand(&state[idx]) % 100;
-		mArray[idx].mState = state[idx];
+		mArray[idx].setState(state[idx]);
 		mArray[idx].Generate();
 	
 	}
@@ -169,6 +174,10 @@ int main(int argc, char *argv[])
 
 	curandState_t h_randStates[N];
 	curandState_t* d_randStates;
+
+	//set stack size for the recursive function depth
+	size_t myStackSize = N*sizeof(Maze);
+	cudaDeviceSetLimit(cudaLimitStackSize, myStackSize);
 	
 
 	/* allocate space on the GPU for the random states */
@@ -220,13 +229,13 @@ int main(int argc, char *argv[])
 
 	gpuErrchk(cudaMemcpy(h_mArray, d_MArray, N* sizeof(Maze), cudaMemcpyDeviceToHost));
 
-	//cudaMemcpy(&intArray, dIntArray, sizeof(unsigned int), cudaMemcpyDeviceToHost);
+
 	
 	end = std::chrono::system_clock::now();
 
 	
 	//std::cout << intArray << " - ";
-	for (int i = 0; i < 10; ++i){
+	for (int i = 0; i < 100; ++i){
 		std::cout << h_mArray[i];
 	}
 
