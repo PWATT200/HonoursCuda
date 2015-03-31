@@ -185,13 +185,14 @@ int main(int argc, char *argv[])
 	
 
 	//cudaMemcpy(d_randStates, &h_randStates, N*sizeof(int), cudaMemcpyHostToDevice);
-	// Setup and use the randStates
+	
 
 	cudaEvent_t rng_start, rng_stop;
 	checkCuda(cudaEventCreate(&rng_start));
 	checkCuda(cudaEventCreate(&rng_stop));
 
 	cudaEventRecord(rng_start, 0);
+	// Setup the randStates
 	setupRandStates <<<N, 1 >>>(d_randStates, time(NULL));
 	cudaEventRecord(rng_stop, 0);
 
@@ -218,6 +219,7 @@ int main(int argc, char *argv[])
 	start = std::chrono::system_clock::now();
 
 	cudaEventRecord(gpu_start, 0);
+	//Generate the Mazes
 	createMaze<<<N, 1 >>>(d_MArray, d_randStates);
 	cudaEventRecord(gpu_stop, 0);
 
