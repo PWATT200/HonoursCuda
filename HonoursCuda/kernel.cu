@@ -108,7 +108,6 @@ public:
 					m_maze[y1 * m_width + x1] = true;
 					Carve(x2, y2);
 			}	
-			//__syncthreads();
 		}
 		
 }
@@ -191,6 +190,10 @@ int main(int argc, char *argv[])
 	checkCuda(cudaEventCreate(&rng_start));
 	checkCuda(cudaEventCreate(&rng_stop));
 
+	std::chrono::time_point<std::chrono::system_clock> start, end, startTest, endTest;
+	start = std::chrono::system_clock::now();
+
+
 	cudaEventRecord(rng_start, 0);
 	// Setup the randStates
 	setupRandStates <<<N, 1 >>>(d_randStates, time(NULL));
@@ -202,8 +205,7 @@ int main(int argc, char *argv[])
 	//gpuErrchk(cudaMemcpy(h_randStates, d_randStates, N*sizeof(curandState_t), cudaMemcpyDeviceToHost));
 	
 	
-	std::chrono::time_point<std::chrono::system_clock> start, end, startTest, endTest;
-	
+
 	Maze h_mArray[N];
 	Maze *d_MArray;
 
@@ -216,7 +218,7 @@ int main(int argc, char *argv[])
 	gpuErrchk(cudaMalloc((void**)&d_MArray, N* sizeof(Maze)));
 	gpuErrchk(cudaMemcpy(d_MArray, &h_mArray, N* sizeof(Maze) , cudaMemcpyHostToDevice));
 
-	start = std::chrono::system_clock::now();
+	
 
 	cudaEventRecord(gpu_start, 0);
 	//Generate the Mazes
@@ -244,11 +246,11 @@ int main(int argc, char *argv[])
 
 	
 	std::chrono::duration<double> interval = end - start;
-	std::cout << "Cuda Test No 1 - iteration : 1000 elasped time: " << interval.count() << "s\n";
+	std::cout << "Cuda Test No 1 - iteration : 100 elasped time: " << interval.count() << "s\n";
 
 	cudaFree(d_MArray);
 	cudaFree(d_randStates);
 
 	cudaDeviceReset();
-	return 0;
+	return 0; // 0.001
 }
