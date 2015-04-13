@@ -121,8 +121,6 @@ public:
 		}
 		return os;
 	}
-
-
 };
 
 
@@ -237,11 +235,11 @@ int main(int argc, char *argv[])
 	
 	end = std::chrono::system_clock::now();
 
-	
+	/*
 	//std::cout << intArray << " - ";
 	for (int i = 0; i < 100; ++i){
 		std::cout << h_mArray[i];
-	}
+	}*/
 
 
 	
