@@ -1,6 +1,3 @@
-// Maze generator in C++
-// Joe Wingbermuehle 2013-11-15
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -82,7 +79,7 @@ private:
 
 };
 
-/** Maze insertion operator. */
+/** Maze insert operator. */
 std::ostream &operator<<(std::ostream &os, const Maze &maze)
 {
 	return maze.Show(os);
@@ -93,44 +90,26 @@ int main(int argc, char *argv[])
 {
 
 	std::vector<Maze*> mazeList;
-	std::chrono::time_point<std::chrono::system_clock> start, end, startTest, endTest;
-	bool doneTest = false;
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+
 	int y = 100;
+
 	start = std::chrono::system_clock::now();
-
-	while (doneTest != true){
-		startTest = std::chrono::system_clock::now();
-
-		for (int i = 0; i < y; ++i){
-			Maze *m = new Maze(39, 23);
-			m->Generate();
-			mazeList.insert(mazeList.begin(), m);
-
-
-		}
-		endTest = std::chrono::system_clock::now();
-
-
-		std::chrono::duration<double> interval = endTest - startTest;
-		std::cout << "iteration : " << y << " elasped time: " << interval.count() << "s\n";
-
-		//if (y >= 10000)
-			doneTest = true;
-		//else
-		//	y *= 10;
+	for (int i = 0; i < y; ++i){
+		Maze *m = new Maze(39, 23);
+		m->Generate();
+		mazeList.insert(mazeList.begin(), m);
 	}
 
 	end = std::chrono::system_clock::now();
-
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	
-	std::vector<Maze*>::const_iterator pos;
 
+	std::vector<Maze*>::const_iterator pos;
 	for (pos = mazeList.begin(); pos != mazeList.end(); ++pos){
 	std::cout << *(*pos);
 	}
+	std::cout << "Single thread CPU - 100 - elasped time:" << elapsed_seconds.count() << "s\n";
 	
-	std::cout << "elasped time:" << elapsed_seconds.count() << "s\n";
-
 	return 0; // 0.256
 }
