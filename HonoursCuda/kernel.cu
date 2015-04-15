@@ -174,11 +174,11 @@ int main(int argc, char *argv[])
 
 	//set stack size for the recursive function depth
 	size_t myStackSize = N*sizeof(Maze);
-	cudaDeviceSetLimit(cudaLimitStackSize, myStackSize);
+	checkCuda(cudaDeviceSetLimit(cudaLimitStackSize, myStackSize));
 	
 
 	/* allocate space on the GPU for the random states */
-	gpuErrchk(cudaMalloc((void**)&d_randStates, N * sizeof(curandState_t)));
+	checkCuda(cudaMalloc((void**)&d_randStates, N * sizeof(curandState_t)));
 	
 
 	//cudaMemcpy(d_randStates, &h_randStates, N*sizeof(int), cudaMemcpyHostToDevice);
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
 	checkCuda(cudaDeviceSynchronize());
 	checkCuda(cudaGetLastError());
 	
-	//gpuErrchk(cudaMemcpy(h_randStates, d_randStates, N*sizeof(curandState_t), cudaMemcpyDeviceToHost));
+	gpuErrchk(cudaMemcpy(h_randStates, d_randStates, N*sizeof(curandState_t), cudaMemcpyDeviceToHost));
 	
 	
 
@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
 	checkCuda(cudaGetLastError());
 
 
-	//gpuErrchk(cudaMemcpy(h_randStates, d_randStates, N*sizeof(int), cudaMemcpyDeviceToHost));
+	gpuErrchk(cudaMemcpy(h_randStates, d_randStates, N*sizeof(int), cudaMemcpyDeviceToHost));
 
 	gpuErrchk(cudaMemcpy(h_mArray, d_MArray, N* sizeof(Maze), cudaMemcpyDeviceToHost));
 
@@ -235,11 +235,11 @@ int main(int argc, char *argv[])
 	
 	end = std::chrono::system_clock::now();
 
-	/*
+	
 	//std::cout << intArray << " - ";
 	for (int i = 0; i < 100; ++i){
 		std::cout << h_mArray[i];
-	}*/
+	}
 
 
 	
